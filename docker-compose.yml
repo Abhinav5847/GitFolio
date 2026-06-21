@@ -8,9 +8,24 @@ services:
       POSTGRES_PASSWORD: gitfolio_password
       POSTGRES_DB: gitfolio_db
     ports:
-      - "5435:5432"  # Map to 5435 on your host to avoid conflict with existing postgres instances
+      - "5435:5432"  # Map to port 5435 on host to avoid port conflicts
     volumes:
       - gitfolio_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gitfolio_backend
+    restart: always
+    ports:
+      - "8000:8000"  # Expose backend API to host
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://gitfolio_user:gitfolio_password@db:5432/gitfolio_db
+    depends_on:
+      - db
 
 volumes:
   gitfolio_postgres_data:
