@@ -1,0 +1,31 @@
+:root {
+  --bg-primary: #0a0a16;
+  --bg-secondary: rgba(255, 255, 255, 0.03);
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --accent-cyan: #06b6d4;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+

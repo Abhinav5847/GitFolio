@@ -1,0 +1,31 @@
+# --- Backend Ignored Files ---
+backend/venv/
+backend/.env
+backend/*.db
+backend/*.db-journal
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- Frontend Ignored Files ---
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# --- OS & Editor Ignored Files ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
