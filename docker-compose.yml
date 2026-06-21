@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gitfolio_db
+    restart: always
+    environment:
+      POSTGRES_USER: gitfolio_user
+      POSTGRES_PASSWORD: gitfolio_password
+      POSTGRES_DB: gitfolio_db
+    ports:
+      - "5435:5432"  # Map to 5435 on your host to avoid conflict with existing postgres instances
+    volumes:
+      - gitfolio_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  gitfolio_postgres_data:

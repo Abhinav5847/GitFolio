@@ -6,13 +6,9 @@ from dotenv import load_dotenv
 # Load env variables
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./gitfolio.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://gitfolio_user:gitfolio_password@localhost:5432/gitfolio_db")
 
-connect_args = {}
-if DATABASE_URL.startswith("sqlite"):
-    connect_args = {"check_same_thread": False}
-
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -22,3 +18,4 @@ def get_db():
         yield db
     finally:
         db.close()
+
