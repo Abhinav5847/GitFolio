@@ -1,16 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 import jwt
 import datetime
 import os
+import re
 from typing import Optional
 import bcrypt
 
 from ..database import get_db
 from ..models import User, PortfolioSettings
 from ..services.github import GitHubService
+from ..services.google import GoogleService
 
 # Load JWT configs from env
 JWT_SECRET = os.getenv("JWT_SECRET", "supersecretjwtsecretkeychangeinproduction12345")
@@ -31,6 +33,31 @@ class RegisterRequest(BaseModel):
     username: str
     email: EmailStr
     password: str
+
+    @field_validator('username')
+    @classmethod
+    def validate_username(cls, v: str) -> str:
+        v = v.strip()
+        if len(v) < 3:
+            raise ValueError("Username must be at least 3 characters")
+        if not re.match(r"^[a-zA-Z0-9_]+$", v):
+            raise ValueError("Username can only contain alphanumeric characters and underscores")
+        return v
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        if not re.search(r"[A-Z]", v):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not re.search(r"[a-z]", v):
+            raise ValueError("Password must contain at least one lowercase letter")
+        if not re.search(r"[0-9]", v):
+            raise ValueError("Password must contain at least one number")
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", v):
+            raise ValueError("Password must contain at least one special character")
+        return v
 
 class LoginRequest(BaseModel):
     email: EmailStr
@@ -271,21 +298,18 @@ async def github_callback(code: str, response: Response, db: Session = Depends(g
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
     )
 
-    # Instead of returning JSON (which frontend might not catch if it's a direct browser redirect), 
-    # we should redirect the user back to the dashboard since it's an OAuth callback directly hit by browser.
-    # We will use RedirectResponse.
-    from fastapi.responses import RedirectResponse
-    redirect_url = "http://localhost:5173/dashboard"
-    res = RedirectResponse(url=redirect_url)
-    res.set_cookie(
-        key="access_token",
-        value=jwt_token,
-        httponly=True,
-        secure=False,
-        samesite="lax",
-        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
-    )
-    return res
+    return {
+        "message": "GitHub Authentication successful",
+        "access_token": jwt_token,
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "avatar_url": user.avatar_url,
+            "name": user.name,
+            "github_connected": True
+        }
+    }
 
 @router.get("/me")
 def get_me(current_user: User = Depends(get_current_user)):
@@ -298,5 +322,113 @@ def get_me(current_user: User = Depends(get_current_user)):
         "name": current_user.name,
         "avatar_url": current_user.avatar_url,
         "email": current_user.email,
-        "github_connected": current_user.github_id is not None
+        "github_connected": current_user.github_id is not None,
+        "google_connected": current_user.google_id is not None
+    }
+
+@router.get("/google/login-url")
+def get_google_login_url():
+    url = GoogleService.get_auth_url()
+    return {"url": url}
+
+@router.get("/google/callback")
+async def google_callback(code: str, response: Response, db: Session = Depends(get_db)):
+    access_token = await GoogleService.exchange_code_for_token(code)
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to exchange Google authorization code"
+        )
+
+    google_user = await GoogleService.get_user_profile(access_token)
+    if not google_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed to fetch Google profile details"
+        )
+
+    google_id = google_user.get("sub")
+    email = google_user.get("email")
+    name = google_user.get("name")
+    avatar_url = google_user.get("picture")
+
+    user = db.query(User).filter(User.google_id == google_id).first()
+
+    if not user:
+        if email:
+            user = db.query(User).filter(User.email == email).first()
+
+        if user:
+            user.google_id = google_id
+            if not user.avatar_url:
+                user.avatar_url = avatar_url
+            db.commit()
+            db.refresh(user)
+        else:
+            import secrets
+            random_pass = secrets.token_urlsafe(32)
+            hashed_pass = get_password_hash(random_pass)
+            
+            # extract username from email
+            base_username = email.split("@")[0]
+            username = base_username
+            counter = 1
+            while db.query(User).filter(User.username == username).first():
+                username = f"{base_username}{counter}"
+                counter += 1
+
+            user = User(
+                email=email,
+                hashed_password=hashed_pass,
+                google_id=google_id,
+                username=username,
+                name=name,
+                avatar_url=avatar_url
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+            portfolio = PortfolioSettings(
+                user_id=user.id,
+                title=f"{name or username}'s Portfolio",
+                bio="Welcome to my portfolio! Here is a collection of my projects.",
+                contact_email=email,
+                theme_name="dark-neon",
+                layout_style="modern"
+            )
+            db.add(portfolio)
+            db.commit()
+    else:
+        if name:
+            user.name = name
+        if avatar_url:
+            user.avatar_url = avatar_url
+        db.commit()
+        db.refresh(user)
+
+    token_data = {"user_id": user.id, "username": user.username}
+    jwt_token = create_jwt_token(token_data)
+
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    )
+
+    return {
+        "message": "Google Authentication successful",
+        "access_token": jwt_token,
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "avatar_url": user.avatar_url,
+            "name": user.name,
+            "github_connected": user.github_id is not None,
+            "google_connected": True
+        }
     }

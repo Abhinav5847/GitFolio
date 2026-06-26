@@ -238,3 +238,74 @@
 .auth-link:hover {
   color: var(--primary-hover);
 }
+
+/* OAuth Sections */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border-color);
+}
+
+.auth-divider::before {
+  margin-right: 0.75rem;
+}
+
+.auth-divider::after {
+  margin-left: 0.75rem;
+}
+
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.oauth-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.oauth-btn.github {
+  background-color: #24292e;
+  color: #ffffff;
+  border: 1px solid #24292e;
+}
+
+.oauth-btn.github:hover:not(:disabled) {
+  background-color: #1b1f23;
+}
+
+.oauth-btn.google {
+  background-color: #ffffff;
+  color: #3c4043;
+  border: 1px solid var(--border-color);
+}
+
+.oauth-btn.google:hover:not(:disabled) {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+}

@@ -12,6 +12,7 @@ class User(Base):
     username = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=True)
     github_id = Column(Integer, unique=True, index=True, nullable=True)
+    google_id = Column(String, unique=True, index=True, nullable=True)
     avatar_url = Column(String, nullable=True)
     access_token = Column(String, nullable=True)  # GitHub access token
     created_at = Column(DateTime, default=datetime.datetime.utcnow)

@@ -45,7 +45,7 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <nav className="dashboard-nav">
         <div className="nav-logo">
-          <span className="logo-icon">⚡</span>
+          <svg className="logo-icon" style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round'}} viewBox="0 0 24 24"><path d="m13 2-2 9h9l-9 11 2-9H4l9-11z"/></svg>
           <span>GitFolio Dashboard</span>
         </div>
         <div className="nav-profile">
@@ -69,7 +69,7 @@ export default function Dashboard() {
 
         <section className="dashboard-main-section">
           <div className="card welcome-card">
-            <h2>Authentication Completed Successfully! 🚀</h2>
+            <h2>Authentication Completed Successfully! <svg style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle'}} viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></h2>
             
             {!user?.github_connected ? (
               <div className="github-connect-section">
@@ -91,7 +91,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div>
-                <p>✅ GitHub Connected Successfully!</p>
+                <p><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle', marginRight: '8px'}} viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> GitHub Connected Successfully!</p>
                 <ul className="todo-list" style={{ marginTop: '1.5rem' }}>
                   <li className="todo-item pending">⏱ Phase 2: Repository Sync Engine (Next)</li>
                   <li className="todo-item pending">⏱ Phase 3: Premium Customizable Portfolio Themes</li>
@@ -102,19 +102,19 @@ export default function Dashboard() {
           </div>
 
           <div className="card info-card">
-            <h2>How GitFolio Works 💡</h2>
+            <h2>How GitFolio Works <svg style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle'}} viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></h2>
             <p>GitFolio is your all-in-one developer portfolio generator. Here is what you can do:</p>
             <ul className="todo-list" style={{ marginTop: '1.5rem' }}>
               <li className="todo-item pending">
-                <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>🔄</span> 
+                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><path d="M21.5 2v6h-6M2.13 15.57a9 9 0 1 0 3.87-11.45L2 6"/><path d="M2.5 22v-6h6"/></svg></span> 
                 <strong>Sync Repositories:</strong> We fetch your best GitHub projects automatically.
               </li>
               <li className="todo-item pending">
-                <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>🎨</span> 
+                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span> 
                 <strong>Customize Aesthetics:</strong> Pick themes, fonts, and colors that match your style.
               </li>
               <li className="todo-item pending">
-                <span style={{ fontSize: '1.25rem', marginRight: '0.5rem' }}>🚀</span> 
+                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><path d="m13 2-2 9h9l-9 11 2-9H4l9-11z"/></svg></span> 
                 <strong>Publish:</strong> Instantly deploy a live link to share with recruiters and peers.
               </li>
             </ul>

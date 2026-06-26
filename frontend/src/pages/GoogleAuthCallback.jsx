@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import './AuthCallback.css';
 
-export default function AuthCallback() {
+export default function GoogleAuthCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -27,7 +27,7 @@ export default function AuthCallback() {
     const processCallback = async () => {
       try {
         setStatus('authenticating');
-        const response = await fetch(`${API_BASE_URL}/auth/callback?code=${code}`);
+        const response = await fetch(`${API_BASE_URL}/auth/google/callback?code=${code}`);
         
         if (!response.ok) {
           const errData = await response.json().catch(() => ({}));
@@ -42,7 +42,6 @@ export default function AuthCallback() {
         login(data.user);
 
         setStatus('syncing');
-        // Add a slight artificial delay for a smoother premium loading experience
         setTimeout(() => {
           navigate('/dashboard');
         }, 1200);
@@ -63,7 +62,7 @@ export default function AuthCallback() {
         {status === 'authenticating' && (
           <div className="status-loader">
             <div className="glowing-spinner"></div>
-            <h2>Connecting to GitHub</h2>
+            <h2>Connecting to Google</h2>
             <p>We are establishing a secure connection to authenticate your profile...</p>
           </div>
         )}

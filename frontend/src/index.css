@@ -1,17 +1,18 @@
 :root {
-  --bg-primary: #f0f4f8;
-  --bg-secondary: #e2e8f0;
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
+  /* Premium Silver-White Theme */
+  --bg-primary: #f8f9fa; /* Very light cool gray */
+  --bg-secondary: #e9ecef; /* Slightly deeper silver-gray */
+  --text-primary: #1e293b; /* Deep slate */
+  --text-secondary: #64748b; /* Soft slate */
   --accent-cyan: #0ea5e9;
   --accent-purple: #6366f1;
   --accent-pink: #ec4899;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --border-color: #cbd5e1;
+  --primary: #0f172a; /* Deep, premium dark navy/slate for primary actions */
+  --primary-hover: #334155;
+  --border-color: #cbd5e1; /* Silver border */
   --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   --error: #ef4444;
-  --card-bg: #ffffff;
+  --card-bg: #ffffff; /* Stark crisp white for cards */
 }
 
 * {

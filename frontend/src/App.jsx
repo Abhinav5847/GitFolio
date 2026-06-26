@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AuthCallback from './pages/AuthCallback';
+import GoogleAuthCallback from './pages/GoogleAuthCallback';
 import Dashboard from './pages/Dashboard';
 
 // Helper component for private routes
@@ -54,6 +55,7 @@ function AppContent() {
         } 
       />
       <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route path="/auth/google/callback" element={<GoogleAuthCallback />} />
       <Route 
         path="/dashboard" 
         element={
