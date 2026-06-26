@@ -1,58 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import './Dashboard.css';
+import Swal from 'sweetalert2';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, logout, checkSession } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    // Fetch user details from session endpoint to verify token validity
-    const checkSession = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Session invalid');
-        }
-        const data = await response.json();
-        setUser(data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-      }
-    };
-
-    checkSession();
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
-  if (loading) {
-    return (
-      <div className="dashboard-loading">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
+  const handleConnectGitHub = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_BASE_URL}/auth/login-url`);
+      if (!response.ok) {
+        throw new Error('Failed to get GitHub authorization URL');
+      }
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Connection Failed',
+        text: 'Failed to connect to GitHub. Please check if backend is running.',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -62,7 +49,11 @@ export default function Dashboard() {
           <span>GitFolio Dashboard</span>
         </div>
         <div className="nav-profile">
-          <img src={user?.avatar_url} alt={user?.username} className="nav-avatar" />
+          {user?.avatar_url ? (
+            <img src={user.avatar_url} alt={user.username} className="nav-avatar" />
+          ) : (
+            <div className="nav-avatar-placeholder">{user?.username?.[0]?.toUpperCase()}</div>
+          )}
           <span className="nav-username">@{user?.username}</span>
           <button className="logout-btn" onClick={handleLogout}>
             Logout
@@ -79,12 +70,28 @@ export default function Dashboard() {
         <section className="dashboard-main-section">
           <div className="card welcome-card">
             <h2>Authentication Completed Successfully! 🚀</h2>
-            <p>Your account is registered. We are ready to build the next phases:</p>
-            <ul className="todo-list">
-              <li className="todo-item done">✓ Phase 1: Authentication Loop</li>
-              <li className="todo-item pending">⏱ Phase 2: Repository Sync Engine (Next)</li>
-              <li className="todo-item pending">⏱ Phase 3: Premium Customizable Portfolio Themes</li>
-            </ul>
+            
+            {!user?.github_connected ? (
+              <div className="github-connect-section">
+                <p>To automatically sync your repositories, you need to connect your GitHub account.</p>
+                <button 
+                  className={`connect-github-btn ${loading ? 'loading' : ''}`}
+                  onClick={handleConnectGitHub}
+                  disabled={loading}
+                >
+                  {loading ? 'Connecting...' : 'Connect GitHub'}
+                </button>
+              </div>
+            ) : (
+              <div>
+                <p>✅ GitHub Connected Successfully!</p>
+                <ul className="todo-list">
+                  <li className="todo-item pending">⏱ Phase 2: Repository Sync Engine (Next)</li>
+                  <li className="todo-item pending">⏱ Phase 3: Premium Customizable Portfolio Themes</li>
+                </ul>
+              </div>
+            )}
+            
           </div>
         </section>
       </main>

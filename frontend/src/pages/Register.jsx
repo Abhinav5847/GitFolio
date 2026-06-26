@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../config';
 import Swal from 'sweetalert2';
 import './Auth.css';
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
-  const { checkSession } = useAuth();
   
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ 
+    username: '', 
+    email: '', 
+    password: '',
+    confirmPassword: ''
+  });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
+    if (!formData.username) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    }
+
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -23,6 +32,12 @@ export default function Login() {
     
     if (!formData.password) {
       newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
     }
     
     setErrors(newErrors);
@@ -42,25 +57,27 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+        throw new Error(errorData.detail || 'Registration failed');
       }
-
-      await checkSession(); // Update AuthContext state
       
       Swal.fire({
         icon: 'success',
-        title: 'Welcome Back!',
+        title: 'Account Created!',
+        text: 'You can now sign in.',
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
@@ -69,11 +86,11 @@ export default function Login() {
         color: '#fff',
       });
       
-      navigate('/dashboard');
+      navigate('/login');
     } catch (err) {
       Swal.fire({
         icon: 'error',
-        title: 'Login Failed',
+        title: 'Registration Failed',
         text: err.message,
         toast: true,
         position: 'top-end',
@@ -89,7 +106,6 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      {/* Decorative background blobs */}
       <div className="bg-blob blob-purple"></div>
       <div className="bg-blob blob-cyan"></div>
       <div className="bg-blob blob-accent"></div>
@@ -103,10 +119,24 @@ export default function Login() {
         </header>
 
         <div className="auth-card">
-          <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Sign in to manage your portfolio</p>
+          <h1 className="auth-title">Create Account</h1>
+          <p className="auth-subtitle">Join us to build your ultimate portfolio</p>
 
           <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                className={`form-input ${errors.username ? 'is-invalid' : ''}`}
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="devninja"
+              />
+              {errors.username && <span className="error-text">{errors.username}</span>}
+            </div>
+
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
               <input
@@ -134,15 +164,29 @@ export default function Login() {
               />
               {errors.password && <span className="error-text">{errors.password}</span>}
             </div>
+            
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                className={`form-input ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+              />
+              {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+            </div>
 
             <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? <span className="spinner"></span> : 'Sign In'}
+              {loading ? <span className="spinner"></span> : 'Create Account'}
             </button>
           </form>
 
           <div className="auth-footer">
             <p>
-              Don't have an account? <Link to="/register" className="auth-link">Create one</Link>
+              Already have an account? <Link to="/login" className="auth-link">Sign In</Link>
             </p>
           </div>
         </div>
