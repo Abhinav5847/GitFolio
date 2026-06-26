@@ -65,8 +65,8 @@ export default function Login() {
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
-        background: 'rgba(20, 20, 30, 0.9)',
-        color: '#fff',
+        background: '#ffffff',
+        color: '#111827',
       });
       
       navigate('/dashboard');
@@ -79,8 +79,8 @@ export default function Login() {
         position: 'top-end',
         showConfirmButton: false,
         timer: 4000,
-        background: 'rgba(20, 20, 30, 0.9)',
-        color: '#fff',
+        background: '#ffffff',
+        color: '#111827',
       });
     } finally {
       setLoading(false);
@@ -89,61 +89,84 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      {/* Decorative background blobs */}
-      <div className="bg-blob blob-purple"></div>
-      <div className="bg-blob blob-cyan"></div>
-      <div className="bg-blob blob-accent"></div>
-      
-      <div className="auth-card-wrapper">
-        <header className="auth-header">
+      <div className="auth-content">
+        
+        <div className="auth-info">
           <div className="logo">
             <span className="logo-icon">⚡</span>
             <span className="logo-text">GitFolio</span>
           </div>
-        </header>
+          <h1>Turn Your GitHub Into a Beautiful Portfolio.</h1>
+          <p>
+            GitFolio automatically syncs with your GitHub account to generate a stunning, professional developer portfolio in seconds. Show off your best work without writing a single line of extra code.
+          </p>
+          <ul className="features-list">
+            <li>
+              <span className="feature-icon">🚀</span>
+              <span><strong>Instant Sync:</strong> Connect your GitHub and we'll automatically pull in your top repositories.</span>
+            </li>
+            <li>
+              <span className="feature-icon">🎨</span>
+              <span><strong>Beautiful Themes:</strong> Choose from a variety of premium, modern UI themes.</span>
+            </li>
+            <li>
+              <span className="feature-icon">⚡</span>
+              <span><strong>Lightning Fast:</strong> Optimized for speed and built with modern web technologies.</span>
+            </li>
+          </ul>
+        </div>
 
-        <div className="auth-card">
-          <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Sign in to manage your portfolio</p>
-
-          <form className="auth-form" onSubmit={handleSubmit} noValidate>
-            <div className="form-group">
-              <label htmlFor="email">Email Address</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className={`form-input ${errors.email ? 'is-invalid' : ''}`}
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-              />
-              {errors.email && <span className="error-text">{errors.email}</span>}
+        <div className="auth-card-wrapper">
+          <header className="auth-header">
+            <div className="logo">
+              <span className="logo-icon">⚡</span>
+              <span className="logo-text">GitFolio</span>
             </div>
+          </header>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className={`form-input ${errors.password ? 'is-invalid' : ''}`}
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-              />
-              {errors.password && <span className="error-text">{errors.password}</span>}
+          <div className="auth-card">
+            <h1 className="auth-title">Welcome Back</h1>
+            <p className="auth-subtitle">Sign in to manage your portfolio</p>
+
+            <form className="auth-form" onSubmit={handleSubmit} noValidate>
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`form-input ${errors.email ? 'is-invalid' : ''}`}
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                />
+                {errors.email && <span className="error-text">{errors.email}</span>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className={`form-input ${errors.password ? 'is-invalid' : ''}`}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                />
+                {errors.password && <span className="error-text">{errors.password}</span>}
+              </div>
+
+              <button type="submit" className="auth-btn" disabled={loading}>
+                {loading ? <span className="spinner"></span> : 'Sign In'}
+              </button>
+            </form>
+
+            <div className="auth-footer">
+              <p>
+                Don't have an account? <Link to="/register" className="auth-link">Create one</Link>
+              </p>
             </div>
-
-            <button type="submit" className="auth-btn" disabled={loading}>
-              {loading ? <span className="spinner"></span> : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="auth-footer">
-            <p>
-              Don't have an account? <Link to="/register" className="auth-link">Create one</Link>
-            </p>
           </div>
         </div>
       </div>

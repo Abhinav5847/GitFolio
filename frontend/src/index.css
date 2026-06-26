@@ -1,13 +1,17 @@
 :root {
-  --bg-primary: #0a0a16;
-  --bg-secondary: rgba(255, 255, 255, 0.03);
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --accent-cyan: #06b6d4;
-  --accent-purple: #8b5cf6;
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --accent-cyan: #0ea5e9;
+  --accent-purple: #6366f1;
   --accent-pink: #ec4899;
-  --border-color: rgba(255, 255, 255, 0.08);
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --border-color: #cbd5e1;
   --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  --error: #ef4444;
+  --card-bg: #ffffff;
 }
 
 * {

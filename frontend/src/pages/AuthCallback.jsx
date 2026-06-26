@@ -56,9 +56,6 @@ export default function AuthCallback() {
 
   return (
     <div className="callback-container">
-      <div className="bg-blob blob-purple"></div>
-      <div className="bg-blob blob-cyan"></div>
-
       <div className="callback-card">
         {status === 'authenticating' && (
           <div className="status-loader">
