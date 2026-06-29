@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, logout, checkSession } = useAuth();
+  const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
@@ -36,6 +36,8 @@ export default function Dashboard() {
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
+        background: '#ffffff',
+        color: '#111111',
       });
       setLoading(false);
     }
@@ -45,37 +47,47 @@ export default function Dashboard() {
     <div className="dashboard-container">
       <nav className="dashboard-nav">
         <div className="nav-logo">
-          <svg className="logo-icon" style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round'}} viewBox="0 0 24 24"><path d="m13 2-2 9h9l-9 11 2-9H4l9-11z"/></svg>
-          <span>GitFolio Dashboard</span>
+          GitFolio
         </div>
-        <div className="nav-profile">
-          {user?.avatar_url ? (
-            <img src={user.avatar_url} alt={user.username} className="nav-avatar" />
-          ) : (
-            <div className="nav-avatar-placeholder">{user?.username?.[0]?.toUpperCase()}</div>
-          )}
-          <span className="nav-username">@{user?.username}</span>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+        <div className="nav-right-cluster">
+          <div className="nav-profile-minimal">
+            {user?.github_connected && user?.avatar_url ? (
+               <img src={user.avatar_url} alt="Profile" className="nav-avatar" />
+            ) : (
+               <div className="nav-avatar-placeholder">{user?.username?.[0]?.toUpperCase() || 'U'}</div>
+            )}
+            <div className="nav-user-details">
+              <span className="nav-username">@{user?.username || 'Guest'}</span>
+              {user?.github_connected && (
+                <span className="git-synced-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  Git Synced
+                </span>
+              )}
+            </div>
+            <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
+          </div>
         </div>
       </nav>
 
       <main className="dashboard-content">
         <header className="dashboard-header">
-          <h1>Welcome, <span className="gradient-text">{user?.name || user?.username}</span>!</h1>
-          <p>This is your control center. Customize your portfolio settings and manage repository synchronization.</p>
+          <h1>
+            Welcome back, <br />
+            <span className="italic-serif text-accent">{user?.name || user?.username}</span>.
+          </h1>
+          <p>This is your control center. Customize your portfolio settings and manage repository synchronization in real-time.</p>
         </header>
 
         <section className="dashboard-main-section">
-          <div className="card welcome-card">
-            <h2>Authentication Completed Successfully! <svg style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle'}} viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></h2>
+          <div className="dashboard-card">
+            <h2>Authentication Status.</h2>
             
             {!user?.github_connected ? (
               <div className="github-connect-section">
                 <p>To automatically sync your repositories, you need to connect your GitHub account.</p>
                 <button 
-                  className={`connect-github-btn ${loading ? 'loading' : ''}`}
+                  className="connect-github-btn"
                   onClick={handleConnectGitHub}
                   disabled={loading}
                 >
@@ -90,32 +102,56 @@ export default function Dashboard() {
                 </button>
               </div>
             ) : (
-              <div>
-                <p><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle', marginRight: '8px'}} viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> GitHub Connected Successfully!</p>
-                <ul className="todo-list" style={{ marginTop: '1.5rem' }}>
-                  <li className="todo-item pending">⏱ Phase 2: Repository Sync Engine (Next)</li>
-                  <li className="todo-item pending">⏱ Phase 3: Premium Customizable Portfolio Themes</li>
+              <div className="status-synced">
+                <p className="success-text">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  GitHub Connected Successfully
+                </p>
+                <ul className="todo-list">
+                  <li className="todo-item">
+                    <strong>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                      Phase 2: Sync Engine
+                    </strong>
+                    <span>Repository synchronization is currently pending.</span>
+                  </li>
+                  <li className="todo-item">
+                    <strong>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                      Phase 3: Custom Themes
+                    </strong>
+                    <span>Premium customizable portfolio themes coming soon.</span>
+                  </li>
                 </ul>
               </div>
             )}
             
           </div>
 
-          <div className="card info-card">
-            <h2>How GitFolio Works <svg style={{width: '24px', height: '24px', stroke: 'currentColor', fill: 'none', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', display: 'inline-block', verticalAlign: 'middle'}} viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></h2>
-            <p>GitFolio is your all-in-one developer portfolio generator. Here is what you can do:</p>
-            <ul className="todo-list" style={{ marginTop: '1.5rem' }}>
-              <li className="todo-item pending">
-                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><path d="M21.5 2v6h-6M2.13 15.57a9 9 0 1 0 3.87-11.45L2 6"/><path d="M2.5 22v-6h6"/></svg></span> 
-                <strong>Sync Repositories:</strong> We fetch your best GitHub projects automatically.
+          <div className="dashboard-card">
+            <h2>Platform Capabilities.</h2>
+            <p>GitFolio operates as your all-in-one developer portfolio generator. The workflow is entirely automated:</p>
+            <ul className="todo-list">
+              <li className="todo-item">
+                <strong>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 2v6h-6"></path><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 22v-6h6"></path></svg>
+                  Sync Repositories
+                </strong> 
+                <span>We fetch your best GitHub projects and contributions instantly.</span>
               </li>
-              <li className="todo-item pending">
-                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg></span> 
-                <strong>Customize Aesthetics:</strong> Pick themes, fonts, and colors that match your style.
+              <li className="todo-item">
+                <strong>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                  Customize Aesthetics
+                </strong> 
+                <span>Select from highly curated, print-quality design systems.</span>
               </li>
-              <li className="todo-item pending">
-                <span style={{ marginRight: '0.5rem', display: 'inline-flex', verticalAlign: 'middle' }}><svg style={{width: '20px', height: '20px', stroke: 'currentColor', fill: 'none', strokeWidth: 2}} viewBox="0 0 24 24"><path d="m13 2-2 9h9l-9 11 2-9H4l9-11z"/></svg></span> 
-                <strong>Publish:</strong> Instantly deploy a live link to share with recruiters and peers.
+              <li className="todo-item">
+                <strong>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  Publish
+                </strong> 
+                <span>Deploy a live portfolio link to share with recruiters and peers.</span>
               </li>
             </ul>
           </div>

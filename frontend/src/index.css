@@ -1,18 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
 :root {
-  /* Premium Silver-White Theme */
-  --bg-primary: #f8f9fa; /* Very light cool gray */
-  --bg-secondary: #e9ecef; /* Slightly deeper silver-gray */
-  --text-primary: #1e293b; /* Deep slate */
-  --text-secondary: #64748b; /* Soft slate */
-  --accent-cyan: #0ea5e9;
-  --accent-purple: #6366f1;
-  --accent-pink: #ec4899;
-  --primary: #0f172a; /* Deep, premium dark navy/slate for primary actions */
-  --primary-hover: #334155;
-  --border-color: #cbd5e1; /* Silver border */
-  --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
-  --error: #ef4444;
-  --card-bg: #ffffff; /* Stark crisp white for cards */
+  /* Editorial Print Theme Colors */
+  --color-canvas: #ffffff;
+  --color-ink: #111111;
+  --color-ink-light: #555555;
+  --color-accent: #002FA7; /* Klein Blue */
+  --color-accent-hover: #00227a;
+  
+  --color-border: #e5e5e5;
+  --color-border-focus: #111111;
+
+  /* Typography */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Outfit', -apple-system, sans-serif;
+
+  /* Fluid Typography Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.25rem, 2vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 3vw, 2rem);
+  --text-3xl: clamp(2rem, 5vw, 3rem);
+  --text-4xl: clamp(3rem, 7vw, 4.5rem);
+  --text-5xl: clamp(4rem, 10vw, 7rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -22,15 +49,26 @@
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   font-family: var(--font-sans);
-  overflow-x: hidden;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
 }
 
-#root {
-  min-height: 100vh;
-  width: 100%;
+/* Serif Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--color-ink);
+  line-height: 1.1;
 }
 
+.text-accent {
+  color: var(--color-accent);
+}
+
+.italic-serif {
+  font-style: italic;
+}
