@@ -19,6 +19,7 @@ class GitHubService:
             f"?client_id={GITHUB_CLIENT_ID}"
             f"&redirect_uri={GITHUB_REDIRECT_URI}"
             f"&scope={scope}"
+            f"&prompt=consent"
         )
 
     @staticmethod
